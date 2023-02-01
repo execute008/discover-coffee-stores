@@ -10,6 +10,7 @@ const Banner = (props: any) => {
         <div className={styles.buttonWrapper}>
             <button className={styles.button} onClick={props.handleOnClick}>{props.btnText}</button>
         </div>
+        <p className={styles.errorMsg}>{props.errorMsg}</p>
     </div>;
 }
 
