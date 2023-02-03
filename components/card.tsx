@@ -4,7 +4,7 @@ import cls from 'classnames';
 import PlacePhoto from './place_photo';
 import { Photo } from '@/models/store';
 
-export default function Card({href, name, photo}:{href: string, name: string, photo: Photo}) {
+export default function Card({href, name, photo}:{href: string, name: string, photo?: Photo}) {
     return (
         <div className={cls('glass',styles.container)}>
             <Link href={href}>
@@ -12,13 +12,13 @@ export default function Card({href, name, photo}:{href: string, name: string, ph
                     <h2 className={styles.cardHeader}>{name}</h2>
                 </div>
                 <div className={styles.cardImageWrapper}>
-                    <PlacePhoto
+                    {photo && <PlacePhoto
                         className={styles.cardImage}
                         photo={photo}
                         width={260}
                         height={160}
                         name={name}
-                    />
+                    />}
                 </div>
             </Link>
         </div>

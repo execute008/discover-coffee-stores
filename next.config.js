@@ -8,7 +8,7 @@ const nextConfig = {
   },
   env: {
     PLACES_API_KEY : "AIzaSyCDCrantCifIZAsZB6NTGh-nAFwHY_1ckw",
-    BASE_LAT_LNG: "51.95046,7.62123"
+    BASE_LAT_LNG: "40.811999,-73.9438361"
   }
 }
 

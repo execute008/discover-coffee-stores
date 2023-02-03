@@ -32,5 +32,6 @@ export const useTrackLocation = () => {
         latLng,
         handleTrackLocation,
         locationErrorMsg,
+        isFindingLocation,
     }
 }

@@ -9,13 +9,13 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import { Store } from '@/models/store'
 import { fetchCoffeeStores } from '@/service/coffee-stores'
 import { useTrackLocation } from '@/hooks/use-track-location'
-import { useEffect } from 'react'
+import { EffectCallback, useEffect, useState } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const getStaticProps: GetStaticProps<{ stores: Store[] }> = async (context) => {
 
-  const stores = await fetchCoffeeStores(process.env.BASE_LAT_LNG ?? "51.95046,7.62123");
+  const stores = await fetchCoffeeStores(process.env.BASE_LAT_LNG ?? "40.811999,-73.9438361");
 
   return {
     props: {
@@ -27,13 +27,23 @@ export const getStaticProps: GetStaticProps<{ stores: Store[] }> = async (contex
 export default function Home({ stores }: InferGetStaticPropsType<typeof getStaticProps>) {
 
   const {latLng, handleTrackLocation, locationErrorMsg, isFindingLocation} = useTrackLocation();
-  
-  
-  console.log({latLng, locationErrorMsg});
+  const [coffeeStores, setCoffeeStores] = useState([]);
 
   const handleOnBannerBtnClick = () => {
     handleTrackLocation();
   };
+
+  useEffect(() => {
+    if(latLng) {
+      fetch(`/api/coffee-stores/${latLng}`).then((res) => {
+        res.json().then((resStores) => {
+          setCoffeeStores(resStores);
+        });
+      }).catch((e) => {
+        console.log(e);
+      });
+    }
+  }, [latLng]);
 
   return (
     <>
@@ -55,6 +65,21 @@ export default function Home({ stores }: InferGetStaticPropsType<typeof getStati
           </div>
         </div>
 
+        {coffeeStores.length > 0 &&
+          <>
+            <h2 className={styles.heading2}>Stores near me</h2>
+            <div className={styles.cardLayout}>
+              {coffeeStores.map((store: Store) => {
+                return <Card
+                  key={store.place_id}
+                  name={store.name}
+                  photo={store.photos ? store.photos[0] : undefined}
+                  href={`/coffee-store/${store.place_id}`}
+                />
+              })}
+            </div>
+          </>}
+
         {stores.length > 0 &&
           <>
             <h2 className={styles.heading2}>Münster Stores</h2>
@@ -63,7 +88,7 @@ export default function Home({ stores }: InferGetStaticPropsType<typeof getStati
                 return <Card
                   key={store.place_id}
                   name={store.name}
-                  photo={store.photos[0]}
+                  photo={store.photos ? store.photos[0] : undefined}
                   href={`/coffee-store/${store.place_id}`}
                 />
               })}
